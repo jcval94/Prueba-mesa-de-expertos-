@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mesa de Expertos Tamalísticos</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #111827;
+        --card: #1f2937;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --accent: #f59e0b;
+        --accent-2: #22c55e;
+        --danger: #f43f5e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(circle at top right, #1e293b, #020617 60%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 3vw, 2.8rem);
+        color: #fde68a;
+      }
+
+      .hero p {
+        margin-top: 0.7rem;
+        color: var(--muted);
+      }
+
+      .chat-panel {
+        background: rgba(17, 24, 39, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        backdrop-filter: blur(6px);
+        padding: 1rem;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.75rem;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 100px;
+        background: #0b1220;
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 0.9rem;
+        resize: vertical;
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent), #fb7185);
+        color: #111827;
+        font-weight: 700;
+        padding: 0.85rem 1.2rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .status {
+        margin: 0.8rem 0 0.4rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .results {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 0.8rem;
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(31, 41, 55, 0.95), rgba(17, 24, 39, 0.95));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 0.9rem;
+      }
+
+      .card h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: #fef3c7;
+      }
+
+      .card p {
+        margin: 0;
+        color: #e5e7eb;
+        line-height: 1.45;
+        white-space: pre-wrap;
+      }
+
+      .tips {
+        margin-top: 1rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <section class="hero">
+        <span class="tag">OpenAI + Google Apps Script</span>
+        <h1>Mesa de Expertos Tamalísticos</h1>
+        <p>
+          Escribe una pregunta sobre tamales y obtén respuestas desde distintas perspectivas en una sola vista.
+        </p>
+      </section>
+
+      <section class="chat-panel">
+        <div class="controls">
+          <textarea id="prompt" placeholder="Ejemplo: ¿Cómo preparo tamales oaxaqueños para 12 personas y que queden esponjados?"></textarea>
+          <button id="sendBtn">Preguntar</button>
+        </div>
+        <p id="status" class="status">Listo para consultar.</p>
+
+        <div class="results" id="results">
+          <article class="card">
+            <h3>👨‍🍳 Experto tamalero</h3>
+            <p>Aquí verás una respuesta técnica de preparación.</p>
+          </article>
+          <article class="card">
+            <h3>😋 Comelón de tamales</h3>
+            <p>Aquí verás una opinión sabrosa y antojadiza.</p>
+          </article>
+          <article class="card">
+            <h3>🏋️ Persona fitness</h3>
+            <p>Aquí verás recomendaciones más ligeras y balanceadas.</p>
+          </article>
+          <article class="card">
+            <h3>🧐 Crítico de tamales</h3>
+            <p>Aquí verás una evaluación severa y detallista.</p>
+          </article>
+        </div>
+
+        <p class="tips">
+          Configura en el script la URL pública de tu Web App de Apps Script en
+          <code>APPS_SCRIPT_WEB_APP_URL</code>.
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const APPS_SCRIPT_WEB_APP_URL = "REEMPLAZA_AQUI_TU_WEB_APP_URL";
+
+      const promptEl = document.getElementById("prompt");
+      const sendBtn = document.getElementById("sendBtn");
+      const statusEl = document.getElementById("status");
+      const resultsEl = document.getElementById("results");
+
+      function renderCards(payload) {
+        const personas = [
+          { key: "experto", title: "👨‍🍳 Experto tamalero" },
+          { key: "comelon", title: "😋 Comelón de tamales" },
+          { key: "fitness", title: "🏋️ Persona fitness" },
+          { key: "critico", title: "🧐 Crítico de tamales" }
+        ];
+
+        resultsEl.innerHTML = personas
+          .map(({ key, title }) => {
+            const text = payload[key] || "Sin respuesta para este rol.";
+            return `<article class="card"><h3>${title}</h3><p>${text}</p></article>`;
+          })
+          .join("");
+      }
+
+      async function sendPrompt() {
+        const question = promptEl.value.trim();
+        if (!question) {
+          statusEl.textContent = "Escribe una pregunta antes de enviar.";
+          return;
+        }
+
+        if (!APPS_SCRIPT_WEB_APP_URL.startsWith("http")) {
+          statusEl.textContent = "Configura primero APPS_SCRIPT_WEB_APP_URL con tu endpoint de Apps Script.";
+          return;
+        }
+
+        sendBtn.disabled = true;
+        statusEl.textContent = "Consultando mesa de expertos...";
+
+        try {
+          const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+          renderCards(data);
+          statusEl.textContent = "Respuesta recibida correctamente.";
+        } catch (error) {
+          statusEl.textContent = `No se pudo consultar el backend: ${error.message}`;
+        } finally {
+          sendBtn.disabled = false;
+        }
+      }
+
+      sendBtn.addEventListener("click", sendPrompt);
+      promptEl.addEventListener("keydown", (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+          sendPrompt();
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,5 +1,53 @@
-# Prueba-mesa-de-expertos-
-Necesito un front end en html, en donde un usuario interactue con un chat (usando la api de open ai con el modelo 5.1 nano) donde me respondan 3 versiones de la respuesta: un experto en tamales y su preparación, un comelon de tamales, una persona fitness, y un critico de los tamales.
-Como back end usaras un codigo de appscript.gs.
+# Prueba mesa de expertos (Tamales)
 
-La arquitectura deberas sugerirla.
+Implementación propuesta con:
+- **Frontend** en `index.html` (interfaz elegante tipo chat/panel).
+- **Backend** en `appscript.gs` para desplegar como **Web App** de Google Apps Script.
+- **Modelo** de OpenAI configurado como `gpt-5.1-nano`.
+
+## Arquitectura sugerida
+
+```text
+Usuario (navegador)
+   │
+   │ POST /question
+   ▼
+Frontend index.html (fetch)
+   │
+   │ POST JSON { question }
+   ▼
+Google Apps Script Web App (appscript.gs)
+   │
+   │ POST /v1/responses (OpenAI)
+   ▼
+OpenAI API (gpt-5.1-nano)
+   │
+   ▼
+JSON con 4 perspectivas: experto, comelon, fitness, critico
+```
+
+### ¿Por qué así?
+- Evitas exponer la API key en el cliente.
+- Despliegue simple sin servidor dedicado.
+- Escalable para agregar moderación, logs o caché en Apps Script.
+
+## Cómo usar
+
+1. Abre `appscript.gs` en un proyecto de Google Apps Script.
+2. En **Project Settings > Script Properties**, crea:
+   - `OPENAI_API_KEY = sk-...`
+3. Despliega como **Web App** (Deploy > New deployment > Web app).
+4. Copia la URL del Web App.
+5. Abre `index.html` y reemplaza:
+   - `APPS_SCRIPT_WEB_APP_URL = "REEMPLAZA_AQUI_TU_WEB_APP_URL"`
+6. Abre `index.html` en navegador y prueba con una pregunta sobre tamales.
+
+## Salida esperada
+
+El frontend mostrará tarjetas con respuestas de:
+- 👨‍🍳 Experto tamalero
+- 😋 Comelón de tamales
+- 🏋️ Persona fitness
+- 🧐 Crítico de tamales
+
+> Nota: aunque el enunciado menciona 3 versiones, también lista 4 perfiles. Esta solución respeta los 4 perfiles listados.
