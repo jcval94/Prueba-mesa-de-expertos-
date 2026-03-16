@@ -42,6 +42,15 @@ JSON con 4 perspectivas: experto, comelon, fitness, critico
    - `APPS_SCRIPT_WEB_APP_URL = "REEMPLAZA_AQUI_TU_WEB_APP_URL"`
 6. Abre `index.html` en navegador y prueba con una pregunta sobre tamales.
 
+### Si ves el error `No se encontró la función de la secuencia de comandos: doGet`
+
+Ese mensaje aparece al abrir la URL del Web App en el navegador cuando el proyecto no expone
+la función `doGet()`. Este repositorio ya la incluye en `appscript.gs`, así que solo necesitas:
+
+1. Guardar cambios en Apps Script.
+2. Crear una **nueva implementación** (Deploy > Manage deployments > Edit > New version).
+3. Volver a abrir la URL actualizada del Web App.
+
 ## Salida esperada
 
 El frontend mostrará tarjetas con respuestas de:

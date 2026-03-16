@@ -10,6 +10,13 @@
 const OPENAI_BASE_URL = 'https://api.openai.com/v1/responses';
 const MODEL_NAME = 'gpt-5.1-nano';
 
+function doGet() {
+  return jsonResponse({
+    ok: true,
+    message: 'Web App activa. Usa POST con JSON: {"question":"..."} para consultar la mesa de expertos.'
+  }, 200);
+}
+
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents || '{}');
