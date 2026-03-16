@@ -11,10 +11,31 @@ const OPENAI_BASE_URL = 'https://api.openai.com/v1/responses';
 const MODEL_NAME = 'gpt-5.1-nano';
 
 function doGet() {
-  return jsonResponse({
-    ok: true,
-    message: 'Web App activa. Usa POST con JSON: {"question":"..."} para consultar la mesa de expertos.'
-  }, 200);
+  try {
+    return HtmlService
+      .createHtmlOutput(getHtmlTemplateByName())
+      .setTitle('Mesa de Expertos Tamalísticos')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  } catch (err) {
+    return jsonResponse({
+      error: 'No se encontró el archivo HTML de la interfaz.',
+      details: String(err),
+      tip: 'Crea un archivo HTML llamado index.html o Tamales.html en Apps Script.'
+    }, 500);
+  }
+}
+
+function getHtmlTemplateByName() {
+  const htmlCandidates = ['index', 'Tamales'];
+  for (let i = 0; i < htmlCandidates.length; i += 1) {
+    try {
+      return HtmlService.createTemplateFromFile(htmlCandidates[i]).evaluate().getContent();
+    } catch (err) {
+      // Intentar con el siguiente nombre candidato.
+    }
+  }
+
+  throw new Error('No existe un archivo HTML compatible (index o Tamales).');
 }
 
 function doPost(e) {

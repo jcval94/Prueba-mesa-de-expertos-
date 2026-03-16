@@ -51,6 +51,12 @@ la función `doGet()`. Este repositorio ya la incluye en `appscript.gs`, así qu
 2. Crear una **nueva implementación** (Deploy > Manage deployments > Edit > New version).
 3. Volver a abrir la URL actualizada del Web App.
 
+
+### Nombre de archivo HTML en Apps Script
+
+El `doGet()` ahora intenta cargar automáticamente `index.html` o `Tamales.html`,
+para evitar problemas de nombre de archivo al publicar el Web App.
+
 ## Salida esperada
 
 El frontend mostrará tarjetas con respuestas de:
