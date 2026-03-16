@@ -181,14 +181,16 @@
         </div>
 
         <p class="tips">
-          Configura en el script la URL pública de tu Web App de Apps Script en
-          <code>APPS_SCRIPT_WEB_APP_URL</code>.
+          Si dejas <code>APPS_SCRIPT_WEB_APP_URL</code> sin cambiar, la página usa automáticamente la URL actual del Web App.
         </p>
       </section>
     </main>
 
     <script>
       const APPS_SCRIPT_WEB_APP_URL = "REEMPLAZA_AQUI_TU_WEB_APP_URL";
+      const WEB_APP_URL = APPS_SCRIPT_WEB_APP_URL === "REEMPLAZA_AQUI_TU_WEB_APP_URL"
+        ? window.location.href.split("?")[0]
+        : APPS_SCRIPT_WEB_APP_URL;
 
       const promptEl = document.getElementById("prompt");
       const sendBtn = document.getElementById("sendBtn");
@@ -218,8 +220,8 @@
           return;
         }
 
-        if (!APPS_SCRIPT_WEB_APP_URL.startsWith("http")) {
-          statusEl.textContent = "Configura primero APPS_SCRIPT_WEB_APP_URL con tu endpoint de Apps Script.";
+        if (!WEB_APP_URL.startsWith("http")) {
+          statusEl.textContent = "Abre esta interfaz desde tu Web App de Apps Script o configura APPS_SCRIPT_WEB_APP_URL.";
           return;
         }
 
@@ -227,7 +229,7 @@
         statusEl.textContent = "Consultando mesa de expertos...";
 
         try {
-          const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+          const response = await fetch(WEB_APP_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ question })
